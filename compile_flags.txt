@@ -1,0 +1,14 @@
+-g
+-Os
+-std=gnu99
+-Isrc
+-mmcu=attiny84a
+-DF_CPU=1000000L
+-I/nix/store/ivhsczriimr31rrmly0bcj03gv4qa3q7-avr-libc-avr-2.2.1/avr/include
+-L/nix/store/ivhsczriimr31rrmly0bcj03gv4qa3q7-avr-libc-avr-2.2.1/avr/lib
+-funsigned-char
+-funsigned-bitfields
+-fpack-struct
+-fshort-enums
+-Wall
+-Wstrict-prototypes

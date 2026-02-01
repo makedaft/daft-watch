@@ -1,2 +1,2 @@
 CompileFlags:
-  Remove: [-mlongcalls, -free, -mtext-section-literals, -fipa-pta, -fno-tree-switch-conversion, -fstrict-volatile-bitfields]
+  Compiler: avr-gcc

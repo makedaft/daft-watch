@@ -21,13 +21,16 @@
               (lib.hiPrio gcc)
               platformio-core
               avrdude
+              pkgs.pkgsCross.avr.buildPackages.gcc
               openocd
               glibc
+              pkgs.pkgsCross.avr.avrlibc
 
               # dev
               clang-tools
               unixtools.xxd
               just
+              pkg-config
             ];
           multiPkgs = pkgs: (with pkgs; [ udev ]);
 
@@ -35,6 +38,7 @@
           profile = ''
             export DIRENV_DISABLE_HOOK=1; # Dont recursively load direnv inside shell
             export WITH_NIX_PREFIX="fhs";
+            export AVR_LIBC="${pkgs.pkgsCross.avr.avrlibc}";
           '';
         };
     in
