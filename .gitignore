@@ -1,9 +1,4 @@
-.pio
 .clang_complete
-.gcc-flags.json
 .ccls
-.cache/
-compile_commands.json
-compiler_defines.h
 a.out
 out/
