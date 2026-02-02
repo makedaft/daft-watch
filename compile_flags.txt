@@ -11,4 +11,3 @@
 -fpack-struct
 -fshort-enums
 -Wall
--Wstrict-prototypes

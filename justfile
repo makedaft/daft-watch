@@ -16,7 +16,7 @@ SERIAL_PORT := "/dev/ttyUSB0"
 
 CFLAGS := f"-g -Os -std=gnu99 -Isrc -mmcu={{MCU}} -DF_CPU={{F_CPU}}L \
 -I{{AVR_LIBC}}/avr/include -L{{AVR_LIBC}}/avr/lib \
--funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -Wall -Wstrict-prototypes"
+-funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -Wall"
 
 AVRDUDE := f"avrdude -v -p {{MCU_PART}} -c {{PROGRAMMER}} -P {{SERIAL_PORT}} -b {{UPLOAD_SPEED}}"
 
@@ -24,6 +24,7 @@ build: compile_flags
   mkdir -p {{OUTDIR}}
   avr-gcc {{CFLAGS}} {{SRC}} -o {{OUTDIR}}/out.elf
   avr-objcopy -O ihex -R .eeprom {{OUTDIR}}/out.elf {{OUTDIR}}/out.hex
+  du -bh "{{OUTDIR}}/out.hex"
 
 write:
   [ -f "{{OUTDIR}}/out.hex" ] || (echo "No out.hex. Run build"; exit 1);
@@ -32,11 +33,15 @@ write:
 read:
   {{AVRDUDE}} -F -U flash:r:-:h
 
+test:
+  gcc -g -std=gnu99 -Isrc -DF_CPU={{F_CPU}}L -DSTUBBED=1 -I./test/stubbed/ -Wall {{SRC}} -o {{OUTDIR}}/test
+  {{OUTDIR}}/test
+
 clean:
   rm -rf {{OUTDIR}}
 
 format:
   find src/ -iname '*.h' -o -iname '*.c' | xargs clang-format -i
 
-compile_flags:
+@compile_flags:
   echo '{{CFLAGS}}' | tr ' ' '\n' > ./compile_flags.txt
