@@ -3,7 +3,7 @@
 -std=gnu99
 -Isrc
 -mmcu=attiny84a
--DF_CPU=1000000L
+-DF_CPU=32768L
 -I/nix/store/ivhsczriimr31rrmly0bcj03gv4qa3q7-avr-libc-avr-2.2.1/avr/include
 -L/nix/store/ivhsczriimr31rrmly0bcj03gv4qa3q7-avr-libc-avr-2.2.1/avr/lib
 -funsigned-char
