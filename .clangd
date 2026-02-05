@@ -1,2 +1,5 @@
 CompileFlags:
   Compiler: avr-gcc
+Diagnostics:
+  Suppress: unknown-attributes
+  Add: bugprone-*, readability-*

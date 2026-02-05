@@ -37,8 +37,8 @@ read:
 write-fuses: check-hexfile-exists
   {{AVRDUDE}} -U lfuse:w:{{OUTDIR}}/out.elf:e -U hfuse:w:{{OUTDIR}}/out.elf:e -U efuse:w:{{OUTDIR}}/out.elf:e
 
-read-fuse:
-  {{AVRDUDE}} -U lfuse:r:-:h -U hfuse:r:-:h
+read-fuses:
+  {{AVRDUDE}} -U lfuse:r:-:h -U hfuse:r:-:h -U efuse:r:-:h
 
 test:
   gcc -g -std=gnu99 -DSTUBBED=1 -I./src -I./test/stubbed/ -Wall -Wno-unused-variable {{SRCS}} -o {{OUTDIR}}/test
@@ -48,7 +48,7 @@ clean:
   rm -rf {{OUTDIR}}
 
 format:
-  find src/ -iname '*.h' -o -iname '*.c' | xargs clang-format -i
+  find src/ test/ -iname '*.h' -o -iname '*.c' | xargs clang-format -i
 
 @check-hexfile-exists:
   [ -f "{{OUTDIR}}/out.hex" ] || (echo "No out.hex. Run build first"; exit 1);

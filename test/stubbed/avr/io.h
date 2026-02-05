@@ -10,6 +10,7 @@ static int PORTB = 0;
 static int PINA = 0;
 static int PINB = 0;
 
+#define PA0 0
 #define PA1 1
 #define PA2 2
 #define PA3 3
@@ -22,7 +23,44 @@ static int PINB = 0;
 #define PB2 2
 #define PB3 3
 #define PB4 4
-#define PB5 5
-#define PB6 6
-#define PB7 7
+
+static int PRR = 0;
+static int TCCR0B = 0;
+static int TCCR0A = 0;
+static int TIMSK0 = 0;
+static int TIFR0 = 0;
+static int OCR0A = 0;
+static int OCR0B = 0;
+static int TCNT0 = 0;
+static int TCCR1B = 0;
+static int TCCR1A = 0;
+static int TIMSK1 = 0;
+static int TIFR1 = 0;
+static int OCR1AH = 0;
+static int OCR1BH = 0;
+static int OCR1AL = 0;
+static int OCR1BL = 0;
+static int TCNT1 = 0;
+static int TCNT1H = 0;
+static int TCNT1L = 0;
+
+#define CS00 1
+#define CS01 1
+#define CS02 2
+#define CS10 1
+#define CS11 1
+#define CS12 2
+#define WGM00 0
+#define WGM01 1
+#define WGM02 2
+#define WGM10 0
+#define WGM11 1
+#define WGM12 2
+#define WGM13 3
+#define TOIE0 0
+#define TOIE1 0
+#define TOV0 0
+#define TOV1 0
+#define OCF1A 0
+#define OCF1B 0
 #endif
