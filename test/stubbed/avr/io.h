@@ -36,10 +36,8 @@ static int TCCR1B = 0;
 static int TCCR1A = 0;
 static int TIMSK1 = 0;
 static int TIFR1 = 0;
-static int OCR1AH = 0;
-static int OCR1BH = 0;
-static int OCR1AL = 0;
-static int OCR1BL = 0;
+static int OCR1A = 0;
+static int OCR1B = 0;
 static int TCNT1 = 0;
 static int TCNT1H = 0;
 static int TCNT1L = 0;
@@ -63,4 +61,10 @@ static int TCNT1L = 0;
 #define TOV1 0
 #define OCF1A 0
 #define OCF1B 0
+#define OCF0A 0
+#define OCF0B 0
+#define OCIE0A 0
+#define OCIE0B 0
+#define OCIE1A 0
+#define OCIE1B 0
 #endif
