@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <util/delay.h>
 
+#include "button.h"
 #include "display.h"
 #include "rtc.h"
 
@@ -38,8 +39,12 @@ volatile uint8_t current_digit = 0;
 
 // Render current digit
 void display_render(void) {
+  button_tick(); // Check button click
+
   DDRA |= 0b11111111;
   DDRB |= 0b11111111;
+  PORTA = 0b01111111;
+  PORTB = 0b00000000;
 
   write_time(minutes, seconds, current_digit);
 

@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <util/delay.h>
 
+#include "button.h"
 #include "display.h"
 #include "rtc.h"
 
@@ -15,16 +16,13 @@ FUSES = {
     .extended = 0xff,
 };
 
-// Display
-// timer 0 has lower priority than timer 1, so some ticks could get skipped due
-// to interrupt starvation
+// Display interrupt
+// Timer 0 has lower priority than timer 1, so some ticks could get skipped on
+// interrupt starvation
 ISR(TIM0_COMPA_vect, ISR_FLATTEN) { display_render(); }
 
 // RTC interrupt
 ISR(TIM1_COMPA_vect, ISR_FLATTEN) { rtc_increment(); }
-
-#define IS_BUTTON_ON() ((PINA & (1 << PA0)) == 0)
-#define ENABLE_BUTTON() (DDRA &= ~(1 << PA0))
 
 int main(void) {
   PRR = 0b0011; // Power reduction register. Shut down USI and ADC
@@ -35,20 +33,16 @@ int main(void) {
   sei();
 
   while (1) {
-    // ENABLE_BUTTON();
-    // if (IS_BUTTON_ON()) {
-    //   cli();
-    //   ENABLE_BUTTON();
-    //   _delay_ms(25); // Debounced
-    //   if (IS_BUTTON_ON()) {
-    //     seconds += 1;
-    //     sei();
-    //     _delay_ms(50);
-    //     continue;
-    //   }
+    // switch (button_tick()) {
+    // case BUTTON_PRESSED:
+    //   seconds += 5;
+    //   break;
+    // case BUTTON_LONG_PRESSED:
+    //   seconds += 10;
+    //   break;
+    // default:
+    //   break;
     // }
-    // sei();
-
 #ifdef STUBBED
     stub_run_timers();
     _delay_ms(100);

@@ -19,7 +19,7 @@ void rtc_setup(void) {
   TIMSK1 = (1 << OCIE1A); // Enable timer overflow interrupt
 }
 
-volatile uint8_t seconds = 10;
+volatile uint8_t seconds = 0;
 volatile uint8_t minutes = 0;
 volatile uint8_t hours = 0;
 
