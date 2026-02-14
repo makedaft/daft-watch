@@ -11,8 +11,8 @@
 // Reversed because a-g is mapped to pa0-6. (pa7 is decimal)
 // Complemented because display is common anode
 const uint32_t digit_masks[] = {
-    0b01000000, 0b01111001, 0b00100100, 0b00110000, 0b00011001,
-    0b00010010, 0b00000010, 0b01111000, 0b00000000, 0b00010000,
+    0b1000000, 0b1111001, 0b0100100, 0b0110000, 0b0011001,
+    0b0010010, 0b0000010, 0b1111000, 0b0000000, 0b0010000,
 };
 
 void display_setup() {
@@ -36,55 +36,70 @@ void display_setup() {
 }
 
 volatile uint8_t current_digit = 0;
+#define TOTAL_DIGITS 4
 
 // Render current digit
 void display_render(void) {
-  button_tick(); // Check button click
-
-  DDRA |= 0b11111111;
-  DDRB |= 0b11111111;
-  PORTA = 0b01111111;
-  PORTB = 0b00000000;
+  // button_tick(); // Check button click
 
   write_time(minutes, seconds, current_digit);
 
-  // Next digit
-  current_digit = (current_digit + 1) % 4;
+  // Cycle through the 4 digits
+  current_digit = (current_digit + 1) % TOTAL_DIGITS;
 }
 
-void write_digit(uint8_t digit) {
-  if (digit > 9 || digit < 0)
-    return;
-  PORTA = digit_masks[digit];
+inline uint32_t get_digit(uint8_t digit) {
+  return digit_masks[digit]; // digit % 10
 }
 
-void write_time(uint16_t hour, uint16_t minute, uint8_t mask) {
+void write_time(uint16_t hour, uint16_t minute, uint8_t digit_index) {
   uint8_t minute_digit1 = minute % 10;
   uint8_t minute_digit2 = (minute / 10) % 10;
   // unsigned short hour_digit1 = hour % 10;
   // unsigned short hour_digit2 = (hour / 10) % 10;
 
-  // Reset digit control pins
-  PORTA &= ~(1 << PA7); // minute digit 1
-  PORTB &= ~(1 << PB2); // minute digit 2
+  // reset pins (all output except PA7,PB2)
+  uint16_t ddra = ~((1 << PA7));
+  uint16_t ddrb = ~((1 << PB2));
+  uint16_t porta = 0;
+  uint16_t portb = 0;
+
+  if (digit_index == 0 || digit_index == 2) {
+    uint32_t segments = get_digit(minute_digit1);
+    porta = segments;
+    ddra |= (1 << PA7);
+    porta |= (1 << PA7);
+    if (segments & (1 << 6)) {
+      // If seg inactive, enable other input and enable pull up res
+      ddrb &= ~(1 << PB2);
+      portb |= (1 << PB2);
+    } else {
+      // If seg active, enable other output and set to 0
+      ddrb |= (1 << PB2);
+      portb &= ~(1 << PB2);
+    }
+  }
+
+  if (digit_index == 1 || digit_index == 3) {
+    uint32_t segments = get_digit(minute_digit2);
+    porta = segments;
+    ddrb |= (1 << PB2);
+    portb |= (1 << PB2);
+    if (segments & (1 << 6)) {
+      // If seg inactive, enable other input and enable pull up res
+      ddra &= ~(1 << PA7);
+      porta |= (1 << PA7);
+    } else {
+      // If seg active, enable other output and set to 0
+      ddra |= (1 << PA7);
+      porta &= ~(1 << PA7);
+    }
+  }
 
   // cli();
-  if (mask == 0 || mask == 2) {
-#ifdef STUBBED
-    printf(" %d\n", minute_digit1);
-    fflush(stdout);
-#endif
-    write_digit(minute_digit1);
-    PORTA |= (1 << PA7);
-  }
-
-  if (mask == 1 || mask == 3) {
-#ifdef STUBBED
-    printf(":: %d", minute_digit2);
-    fflush(stdout);
-#endif
-    write_digit(minute_digit2);
-    PORTB |= (1 << PB2);
-  }
+  DDRA = ddra;
+  DDRB = ddrb;
+  PORTA = porta;
+  PORTB = portb;
   // sei();
 }
