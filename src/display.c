@@ -3,17 +3,8 @@
 #include <stdint.h>
 #include <util/delay.h>
 
-#include "button.h"
 #include "display.h"
 #include "rtc.h"
-
-// "_gfedcba"
-// Reversed because a-g is mapped to pa0-6. (pa7 is decimal)
-// Complemented because display is common anode
-const uint32_t digit_masks[] = {
-    0b1000000, 0b1111001, 0b0100100, 0b0110000, 0b0011001,
-    0b0010010, 0b0000010, 0b1111000, 0b0000000, 0b0010000,
-};
 
 void display_setup() {
   // Set prescaler CS01 + CS00 (F_CPU / 64) + CTC
@@ -36,70 +27,66 @@ void display_setup() {
 }
 
 volatile uint8_t current_digit = 0;
-#define TOTAL_DIGITS 4
 
 // Render current digit
 void display_render(void) {
-  // button_tick(); // Check button click
-
   write_time(minutes, seconds, current_digit);
 
   // Cycle through the 4 digits
-  current_digit = (current_digit + 1) % TOTAL_DIGITS;
+  current_digit = (current_digit + 1) % 4;
 }
 
-inline uint32_t get_digit(uint8_t digit) {
-  return digit_masks[digit]; // digit % 10
-}
+// TODO: Wtf. Fix the names
+
+#define DSEGMENT_1 6
+#define DSEGMENT_MASK_1 ((1 << 6) | (1 << 7))
+#define DSEGMENT_2 5
+#define DSEGMENT_MASK_2 ((1 << 5) | (1 << 10))
+
+#define ALL_DUAL_PURPOSE_PINS (DSEGMENT_MASK_1 | DSEGMENT_MASK_2)
+
+uint8_t dual_purpose_pins[] = {6, 7, 5, 10};
+uint8_t dual_purpose_antipins[] = {7, 6, 10, 5};
 
 void write_time(uint16_t hour, uint16_t minute, uint8_t digit_index) {
-  uint8_t minute_digit1 = minute % 10;
-  uint8_t minute_digit2 = (minute / 10) % 10;
-  // unsigned short hour_digit1 = hour % 10;
-  // unsigned short hour_digit2 = (hour / 10) % 10;
+  // reset pins
+  uint32_t ddr = ~ALL_DUAL_PURPOSE_PINS;
+  uint32_t port = 0;
 
-  // reset pins (all output except PA7,PB2)
-  uint16_t ddra = ~((1 << PA7));
-  uint16_t ddrb = ~((1 << PB2));
-  uint16_t porta = 0;
-  uint16_t portb = 0;
+  uint8_t digit = get_digit(hour, minute, digit_index);
+  uint32_t segments = get_digit_mask(digit);
+  uint8_t pin = dual_purpose_pins[digit_index];
+  uint8_t antipin = dual_purpose_antipins[digit_index];
+  uint8_t segment_pin = digit_index / 2 == 0 ? DSEGMENT_1 : DSEGMENT_2;
+  uint8_t other_segment_pin = digit_index / 2 == 0 ? DSEGMENT_2 : DSEGMENT_1;
+  uint8_t other_segment_mask =
+      digit_index / 2 == 0 ? DSEGMENT_MASK_2 : DSEGMENT_MASK_1;
 
-  if (digit_index == 0 || digit_index == 2) {
-    uint32_t segments = get_digit(minute_digit1);
-    porta = segments;
-    ddra |= (1 << PA7);
-    porta |= (1 << PA7);
-    if (segments & (1 << 6)) {
-      // If seg inactive, enable other input and enable pull up res
-      ddrb &= ~(1 << PB2);
-      portb |= (1 << PB2);
-    } else {
-      // If seg active, enable other output and set to 0
-      ddrb |= (1 << PB2);
-      portb &= ~(1 << PB2);
-    }
+  port = segments;
+
+  // Activate dual purpose segment
+  ddr |= (1 << pin);
+  port |= (1 << pin);
+  if (segments & (1 << segment_pin)) {
+    // If seg inactive, enable other input and enable pull up res
+    ddr &= ~(1 << antipin);
+    port |= (1 << antipin);
+  } else {
+    // If seg active, enable other output and set to 0
+    ddr |= (1 << antipin);
+    port &= ~(1 << antipin);
   }
 
-  if (digit_index == 1 || digit_index == 3) {
-    uint32_t segments = get_digit(minute_digit2);
-    porta = segments;
-    ddrb |= (1 << PB2);
-    portb |= (1 << PB2);
-    if (segments & (1 << 6)) {
-      // If seg inactive, enable other input and enable pull up res
-      ddra &= ~(1 << PA7);
-      porta |= (1 << PA7);
-    } else {
-      // If seg active, enable other output and set to 0
-      ddra |= (1 << PA7);
-      porta &= ~(1 << PA7);
-    }
+  // Activate other dual purpose segment
+  if ((segments & (1 << other_segment_pin)) == 0) {
+    ddr |= other_segment_mask;
+    port &= ~other_segment_mask;
   }
 
   // cli();
-  DDRA = ddra;
-  DDRB = ddrb;
-  PORTA = porta;
-  PORTB = portb;
+  DDRA = ddr;
+  DDRB = ddr >> 8;
+  PORTA = port;
+  PORTB = port >> 8;
   // sei();
 }

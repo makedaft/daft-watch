@@ -19,7 +19,10 @@ FUSES = {
 // Display interrupt
 // Timer 0 has lower priority than timer 1, so some ticks could get skipped on
 // interrupt starvation
-ISR(TIM0_COMPA_vect, ISR_FLATTEN) { display_render(); }
+ISR(TIM0_COMPA_vect, ISR_FLATTEN) {
+  // button_tick(); // Check button click
+  display_render();
+}
 
 // RTC interrupt
 ISR(TIM1_COMPA_vect, ISR_FLATTEN) { rtc_increment(); }
