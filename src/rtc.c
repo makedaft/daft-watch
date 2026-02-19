@@ -23,14 +23,28 @@ volatile uint8_t seconds = 0;
 volatile uint8_t minutes = 0;
 volatile uint8_t hours = 0;
 
+volatile uint8_t seconds_digit1 = 0;
+volatile uint8_t seconds_digit2 = 0;
+volatile uint8_t minutes_digit1 = 0;
+volatile uint8_t minutes_digit2 = 0;
+volatile uint8_t hours_digit1 = 0;
+volatile uint8_t hours_digit2 = 0;
+
 void rtc_increment(void) {
   uint8_t s = seconds + 1;
   seconds = s % 60;
+  // TODO: Remove seconds digits calculation
+  seconds_digit1 = seconds % 10;
+  seconds_digit2 = (seconds / 10) % 10;
   if (s >= 60) {
     uint8_t m = minutes + 1;
     minutes = m % 60;
+    minutes_digit1 = minutes % 10;
+    minutes_digit2 = (minutes / 10) % 10;
     if (m >= 60) {
       hours = (hours + 1) % 24;
+      hours_digit1 = hours % 10;
+      hours_digit2 = (hours / 10) % 10;
     }
   }
 }

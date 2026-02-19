@@ -30,43 +30,51 @@ volatile uint8_t current_digit = 0;
 
 // Render current digit
 void display_render(void) {
-  write_time(minutes, seconds, current_digit);
+  write_time(current_digit);
 
   // Cycle through the 4 digits
   current_digit = (current_digit + 1) % 4;
 }
 
-// TODO: Wtf. Fix the names
+// Special segments index position
+#define SPECIAL_SEGMENT_1 5
+#define SPECIAL_SEGMENT_2 6
 
-#define DSEGMENT_1 6
-#define DSEGMENT_MASK_1 ((1 << 6) | (1 << 7))
-#define DSEGMENT_2 5
-#define DSEGMENT_MASK_2 ((1 << 5) | (1 << 10))
+// Special segment masked pins
+#define SPECIAL_SEGMENT_MASK_1 ((1 << 5) | (1 << 10))
+#define SPECIAL_SEGMENT_MASK_2 ((1 << 6) | (1 << 7))
 
-#define ALL_DUAL_PURPOSE_PINS (DSEGMENT_MASK_1 | DSEGMENT_MASK_2)
+// All special segment pings
+#define SPECIAL_SEGMENT_PINS (SPECIAL_SEGMENT_MASK_1 | SPECIAL_SEGMENT_MASK_2)
 
-uint8_t dual_purpose_pins[] = {6, 7, 5, 10};
-uint8_t dual_purpose_antipins[] = {7, 6, 10, 5};
+// Digit position -> special segment pin
+static uint8_t special_segment_pins[] = {5, 10, 6, 7};
 
-void write_time(uint16_t hour, uint16_t minute, uint8_t digit_index) {
+// Digit position -> special segment anti-pin (pair of pin)
+static uint8_t special_segment_antipins[] = {10, 5, 7, 6};
+
+void write_time(uint8_t digit_index) {
   // reset pins
-  uint32_t ddr = ~ALL_DUAL_PURPOSE_PINS;
+  uint32_t ddr = ~SPECIAL_SEGMENT_PINS;
   uint32_t port = 0;
 
-  uint8_t digit = get_digit(hour, minute, digit_index);
-  uint32_t segments = get_digit_mask(digit);
-  uint8_t pin = dual_purpose_pins[digit_index];
-  uint8_t antipin = dual_purpose_antipins[digit_index];
-  uint8_t segment_pin = digit_index / 2 == 0 ? DSEGMENT_1 : DSEGMENT_2;
-  uint8_t other_segment_pin = digit_index / 2 == 0 ? DSEGMENT_2 : DSEGMENT_1;
+  uint8_t digits[] = {seconds_digit1, seconds_digit2, minutes_digit1,
+                      minutes_digit2};
+
+  uint8_t digit = digits[digit_index];
+  uint32_t segments = digit_masks[digit];
+  uint8_t pin = special_segment_pins[digit_index];
+  uint8_t antipin = special_segment_antipins[digit_index];
+  uint8_t segment_pin =
+      digit_index / 2 == 0 ? SPECIAL_SEGMENT_1 : SPECIAL_SEGMENT_2;
+  uint8_t other_segment_pin =
+      digit_index / 2 == 0 ? SPECIAL_SEGMENT_2 : SPECIAL_SEGMENT_1;
   uint8_t other_segment_mask =
-      digit_index / 2 == 0 ? DSEGMENT_MASK_2 : DSEGMENT_MASK_1;
+      digit_index / 2 == 0 ? SPECIAL_SEGMENT_MASK_2 : SPECIAL_SEGMENT_MASK_1;
 
-  port = segments;
-
-  // Activate dual purpose segment
+  // Activate special segment
   ddr |= (1 << pin);
-  port |= (1 << pin);
+  port = segments | (1 << pin);
   if (segments & (1 << segment_pin)) {
     // If seg inactive, enable other input and enable pull up res
     ddr &= ~(1 << antipin);
@@ -77,16 +85,14 @@ void write_time(uint16_t hour, uint16_t minute, uint8_t digit_index) {
     port &= ~(1 << antipin);
   }
 
-  // Activate other dual purpose segment
+  // Activate other special segment
   if ((segments & (1 << other_segment_pin)) == 0) {
     ddr |= other_segment_mask;
     port &= ~other_segment_mask;
   }
 
-  // cli();
   DDRA = ddr;
   DDRB = ddr >> 8;
   PORTA = port;
   PORTB = port >> 8;
-  // sei();
 }
