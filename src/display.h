@@ -2,8 +2,6 @@
 #define _LOADED_DISPLAY
 #include <stdint.h>
 
-#include "rtc.h"
-
 // "_gfedcba"
 // Reversed because a-g is mapped to pa0-6. (pa7 is decimal)
 // Complemented because display is common anode

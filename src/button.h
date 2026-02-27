@@ -16,5 +16,4 @@ enum ButtonState {
 uint16_t extern button_tick_count;
 
 void button_tick();
-enum ButtonState check_button_state();
 #endif

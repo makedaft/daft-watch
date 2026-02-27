@@ -20,12 +20,15 @@ FUSES = {
 // Timer 0 has lower priority than timer 1, so some ticks could get skipped on
 // interrupt starvation
 ISR(TIM0_COMPA_vect, ISR_FLATTEN) {
-  // button_tick(); // Check button click
+  button_tick(); // Check button click
   display_render();
 }
 
 // RTC interrupt
 ISR(TIM1_COMPA_vect, ISR_FLATTEN) { rtc_increment(); }
+
+// Button interrupt
+ISR(PCINT0_vect, ISR_FLATTEN) { button_tick(); }
 
 int main(void) {
   PRR = 0b0011; // Power reduction register. Shut down USI and ADC

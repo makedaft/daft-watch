@@ -55,21 +55,21 @@ static uint8_t special_segment_antipins[] = {10, 5, 7, 6};
 
 void write_time(uint8_t digit_index) {
   // reset pins
-  uint32_t ddr = ~SPECIAL_SEGMENT_PINS;
-  uint32_t port = 0;
+  uint16_t ddr = ~SPECIAL_SEGMENT_PINS;
+  uint16_t port = 0;
 
   uint8_t digits[] = {seconds_digit1, seconds_digit2, minutes_digit1,
                       minutes_digit2};
 
   uint8_t digit = digits[digit_index];
-  uint32_t segments = digit_masks[digit];
+  uint16_t segments = digit_masks[digit];
   uint8_t pin = special_segment_pins[digit_index];
   uint8_t antipin = special_segment_antipins[digit_index];
   uint8_t segment_pin =
       digit_index / 2 == 0 ? SPECIAL_SEGMENT_1 : SPECIAL_SEGMENT_2;
   uint8_t other_segment_pin =
       digit_index / 2 == 0 ? SPECIAL_SEGMENT_2 : SPECIAL_SEGMENT_1;
-  uint8_t other_segment_mask =
+  uint16_t other_segment_mask =
       digit_index / 2 == 0 ? SPECIAL_SEGMENT_MASK_2 : SPECIAL_SEGMENT_MASK_1;
 
   // Activate special segment

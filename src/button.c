@@ -1,18 +1,14 @@
 #include <avr/io.h>
 #include <stdint.h>
 
-#include "avr/interrupt.h"
 #include "button.h"
 #include "rtc.h"
 
-bool is_button_active = false;
-
-uint16_t button_tick_count = 0;
-
-ISR(PCINT0_vect, ISR_FLATTEN) { button_tick(); }
+enum ButtonState check_button_state();
 
 void button_tick() {
-  switch (check_button_state()) {
+  enum ButtonState button_state = check_button_state();
+  switch (button_state) {
   case BUTTON_PRESSED:
     if (seconds <= 10)
       seconds = 0;
@@ -26,6 +22,9 @@ void button_tick() {
     break;
   }
 }
+
+bool is_button_active = false;
+uint16_t button_tick_count = 0;
 
 enum ButtonState check_button_state() {
   if (is_button_active && button_tick_count >= LONG_PRESS_TICK_COUNT) {
