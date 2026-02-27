@@ -14,32 +14,22 @@
     let
       shell =
         { pkgs }:
-        pkgs.buildFHSEnv {
-          name = "daft-watch-env";
-          targetPkgs =
-            pkgs: with pkgs; [
-              (lib.hiPrio gcc)
-              platformio-core
-              avrdude
-              pkgs.pkgsCross.avr.buildPackages.gcc
-              openocd
-              glibc
-              pkgs.pkgsCross.avr.avrlibc
+        pkgs.mkShell rec {
+          buildInputs = with pkgs; [
+            pkgs.pkgsCross.avr.buildPackages.gcc
+            pkgs.pkgsCross.avr.avrlibc
+            avrdude
 
-              # dev
-              clang-tools
-              unixtools.xxd
-              just
-              pkg-config
-            ];
-          multiPkgs = pkgs: (with pkgs; [ udev ]);
+            # dev
+            openocd
+            clang-tools
+            unixtools.xxd
+            just
+            pkg-config
+          ];
 
-          runScript = "zsh";
-          profile = ''
-            export DIRENV_DISABLE_HOOK=1; # Dont recursively load direnv inside shell
-            export WITH_NIX_PREFIX="fhs";
-            export AVR_LIBC="${pkgs.pkgsCross.avr.avrlibc}";
-          '';
+          AVR_LIBC = "${pkgs.pkgsCross.avr.avrlibc}";
+          LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath buildInputs}";
         };
     in
     flake-utils.lib.eachDefaultSystem (
@@ -48,7 +38,7 @@
         pkgs = import nixpkgs { inherit system; };
       in
       {
-        devShells.default = (shell { inherit pkgs; }).env;
+        devShells.default = shell { inherit pkgs; };
       }
     );
 }
