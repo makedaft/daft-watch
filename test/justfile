@@ -1,0 +1,13 @@
+OUTDIR := "../out"
+TSRCS := "../src/display.c ../src/rtc.c ../src/button.c ../src/mode.c ./stubbed/testindex.c"
+
+TCFLAGS := f"-g -std=gnu99 -DSTUBBED=1 -I../src -I./stubbed/ -Wall -Wno-unused-variable {{TSRCS}}"
+
+main:
+  gcc {{TCFLAGS}} ../src/main.c -o {{OUTDIR}}/test_main
+  {{OUTDIR}}/test_main
+
+button:
+  gcc {{TCFLAGS}} ./button_test.c -o {{OUTDIR}}/test_button
+  {{OUTDIR}}/test_button
+

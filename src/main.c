@@ -28,7 +28,7 @@ ISR(TIM0_COMPA_vect, ISR_FLATTEN) {
 ISR(TIM1_COMPA_vect, ISR_FLATTEN) { rtc_increment(); }
 
 // Button interrupt
-ISR(PCINT0_vect, ISR_FLATTEN) { button_tick(); }
+// ISR(PCINT0_vect, ISR_FLATTEN) { button_tick(); }
 
 int main(void) {
   PRR = 0b0011; // Power reduction register. Shut down USI and ADC

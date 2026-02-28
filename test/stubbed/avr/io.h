@@ -2,13 +2,13 @@
 #define STUB_AVR_IO
 #include <stdio.h>
 
-static int DDRA = 0;
-static int DDRB = 0;
+extern int DDRA;
+extern int DDRB;
 
-static int PORTA = 0;
-static int PORTB = 0;
-static int PINA = 0;
-static int PINB = 0;
+extern int PORTA;
+extern int PORTB;
+extern int PINA;
+extern int PINB;
 
 #define PA0 0
 #define PA1 1
@@ -24,23 +24,23 @@ static int PINB = 0;
 #define PB3 3
 #define PB4 4
 
-static int PRR = 0;
-static int TCCR0B = 0;
-static int TCCR0A = 0;
-static int TIMSK0 = 0;
-static int TIFR0 = 0;
-static int OCR0A = 0;
-static int OCR0B = 0;
-static int TCNT0 = 0;
-static int TCCR1B = 0;
-static int TCCR1A = 0;
-static int TIMSK1 = 0;
-static int TIFR1 = 0;
-static int OCR1A = 0;
-static int OCR1B = 0;
-static int TCNT1 = 0;
-static int TCNT1H = 0;
-static int TCNT1L = 0;
+extern int PRR;
+extern int TCCR0B;
+extern int TCCR0A;
+extern int TIMSK0;
+extern int TIFR0;
+extern int OCR0A;
+extern int OCR0B;
+extern int TCNT0;
+extern int TCCR1B;
+extern int TCCR1A;
+extern int TIMSK1;
+extern int TIFR1;
+extern int OCR1A;
+extern int OCR1B;
+extern int TCNT1;
+extern int TCNT1H;
+extern int TCNT1L;
 
 #define CS00 1
 #define CS01 1

@@ -17,4 +17,8 @@ void rtc_setup(void);
 
 void rtc_increment(void);
 
+void rtc_set_minutes(uint8_t m);
+
+void rtc_set_hours(uint8_t h);
+
 #endif

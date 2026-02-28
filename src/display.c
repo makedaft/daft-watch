@@ -4,7 +4,16 @@
 #include <util/delay.h>
 
 #include "display.h"
+#include "mode.h"
 #include "rtc.h"
+
+// "_gfedcba"
+// Reversed because a-g is mapped to pa0-6. (pa7 is decimal)
+// Complemented because display is common anode
+static const uint32_t digit_masks[] = {
+    0b1000000, 0b1111001, 0b0100100, 0b0110000, 0b0011001,
+    0b0010010, 0b0000010, 0b1111000, 0b0000000, 0b0010000,
+};
 
 void display_setup() {
   // Set prescaler CS01 + CS00 (F_CPU / 64) + CTC
@@ -26,11 +35,27 @@ void display_setup() {
   PORTB = (1 << PB2);
 }
 
+void write_time(uint8_t digit_index, const uint8_t digits[4]);
+
+// Current digit position
 volatile uint8_t current_digit = 0;
 
 // Render current digit
 void display_render(void) {
-  write_time(current_digit);
+  switch (current_mode) {
+  case ModeDisplayTime: {
+    uint8_t digits[] = {minutes_digit1, minutes_digit2, seconds_digit1,
+                        seconds_digit2};
+    write_time(current_digit, digits);
+    break;
+  }
+  case ModeSetTime: {
+    uint8_t digits[] = {new_hours / 10, new_hours % 10, new_minutes / 10,
+                        new_minutes % 10};
+    write_time(current_digit, digits);
+    break;
+  }
+  }
 
   // Cycle through the 4 digits
   current_digit = (current_digit + 1) % 4;
@@ -53,13 +78,10 @@ static uint8_t special_segment_pins[] = {5, 10, 6, 7};
 // Digit position -> special segment anti-pin (pair of pin)
 static uint8_t special_segment_antipins[] = {10, 5, 7, 6};
 
-void write_time(uint8_t digit_index) {
+void write_time(uint8_t digit_index, const uint8_t digits[4]) {
   // reset pins
   uint16_t ddr = ~SPECIAL_SEGMENT_PINS;
   uint16_t port = 0;
-
-  uint8_t digits[] = {seconds_digit1, seconds_digit2, minutes_digit1,
-                      minutes_digit2};
 
   uint8_t digit = digits[digit_index];
   uint16_t segments = digit_masks[digit];
@@ -92,7 +114,7 @@ void write_time(uint8_t digit_index) {
   }
 
   DDRA = ddr;
-  DDRB = ddr >> 8;
   PORTA = port;
+  DDRB = ddr >> 8;
   PORTB = port >> 8;
 }

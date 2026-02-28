@@ -38,13 +38,20 @@ void rtc_increment(void) {
   seconds_digit2 = (seconds / 10) % 10;
   if (s >= 60) {
     uint8_t m = minutes + 1;
-    minutes = m % 60;
-    minutes_digit1 = minutes % 10;
-    minutes_digit2 = (minutes / 10) % 10;
-    if (m >= 60) {
-      hours = (hours + 1) % 24;
-      hours_digit1 = hours % 10;
-      hours_digit2 = (hours / 10) % 10;
-    }
+    rtc_set_minutes(m);
+    if (m >= 60)
+      rtc_set_hours(hours + 1);
   }
+}
+
+void rtc_set_minutes(uint8_t m) {
+  minutes = m % 60;
+  minutes_digit1 = minutes % 10;
+  minutes_digit2 = (minutes / 10) % 10;
+}
+
+void rtc_set_hours(uint8_t h) {
+  hours = h % 24;
+  hours_digit1 = hours % 10;
+  hours_digit2 = (hours / 10) % 10;
 }

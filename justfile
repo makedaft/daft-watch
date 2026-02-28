@@ -1,6 +1,8 @@
 set export
 set unstable
 
+mod test
+
 default:
   just --choose || true
 
@@ -8,7 +10,7 @@ AVR_LIBC := env("AVR_LIBC", "/usr/lib/avr")
 F_CPU := "32768"
 MCU := "attiny84a"
 MCU_PART := "attiny84"
-SRCS := "src/main.c src/display.c src/rtc.c src/button.c"
+SRCS := "src/main.c src/display.c src/rtc.c src/button.c src/mode.c"
 OUTDIR := "./out"
 PROGRAMMER := "arduino"
 UPLOAD_SPEED := "19200"
@@ -39,10 +41,6 @@ write-fuses: check-hexfile-exists
 
 read-fuses:
   {{AVRDUDE}} -U lfuse:r:-:h -U hfuse:r:-:h -U efuse:r:-:h
-
-test:
-  gcc -g -std=gnu99 -DSTUBBED=1 -I./src -I./test/stubbed/ -Wall -Wno-unused-variable {{SRCS}} -o {{OUTDIR}}/test
-  {{OUTDIR}}/test
 
 clean:
   rm -rf {{OUTDIR}}
