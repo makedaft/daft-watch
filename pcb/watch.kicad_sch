@@ -2363,7 +2363,7 @@
 	)
 	(wire
 		(pts
-			(xy 76.2 71.12) (xy 82.55 71.12)
+			(xy 76.2 72.39) (xy 82.55 72.39)
 		)
 		(stroke
 			(width 0)
@@ -2473,16 +2473,6 @@
 	)
 	(wire
 		(pts
-			(xy 82.55 78.74) (xy 82.55 80.01)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "66c9d8b8-446c-4d49-9bee-80e1d28f7b18")
-	)
-	(wire
-		(pts
 			(xy 102.87 50.8) (xy 128.27 50.8)
 		)
 		(stroke
@@ -2503,7 +2493,7 @@
 	)
 	(wire
 		(pts
-			(xy 76.2 71.12) (xy 76.2 74.93)
+			(xy 76.2 72.39) (xy 76.2 74.93)
 		)
 		(stroke
 			(width 0)
@@ -3695,19 +3685,20 @@
 		(fields_autoplaced yes)
 		(uuid "8721c100-cf61-4ebe-917a-dfda79fc8947")
 		(property "Reference" "U3"
-			(at 151.13 50.8 0)
+			(at 151.13 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "LTC-4627JD"
+		(property "Value" "~"
 			(at 151.13 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Display_7Segment:LTC-4627Jx"
@@ -4198,7 +4189,7 @@
 	)
 	(symbol
 		(lib_id "Device:Crystal")
-		(at 82.55 74.93 90)
+		(at 82.55 76.2 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4207,7 +4198,7 @@
 		(fields_autoplaced yes)
 		(uuid "c8dc9e52-f188-4ae7-9361-05cc407c2f92")
 		(property "Reference" "Y1"
-			(at 86.36 73.6599 90)
+			(at 86.36 74.9299 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4215,8 +4206,8 @@
 				(justify right)
 			)
 		)
-		(property "Value" "Crystal"
-			(at 86.36 76.1999 90)
+		(property "Value" "32KHz"
+			(at 86.36 77.4699 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4225,7 +4216,7 @@
 			)
 		)
 		(property "Footprint" "Crystal:Crystal_Round_D1.5mm_Vertical"
-			(at 82.55 74.93 0)
+			(at 82.55 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4234,7 +4225,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 82.55 74.93 0)
+			(at 82.55 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4243,7 +4234,7 @@
 			)
 		)
 		(property "Description" "Two pin crystal"
-			(at 82.55 74.93 0)
+			(at 82.55 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)

@@ -4,3 +4,4 @@ a.out
 out/
 *.zip
 fp-info-cache
+*.lck

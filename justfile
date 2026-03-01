@@ -53,3 +53,6 @@ format:
 
 @compile-flags:
   echo '{{CFLAGS}}' | tr ' ' '\n' > ./compile_flags.txt
+
+schematic:
+  kicad-cli sch export svg -t arcana ./pcb/watch.kicad_sch

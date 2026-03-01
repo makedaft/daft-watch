@@ -1,4 +1,9 @@
-# Watch with attiny84a WIP
+# Watch with attiny84a
+My attempt at making a digital watch with attiny84a
 
-Inspired by https://github.com/ingepnet/breadboardwatch
+### Schematic
 
+![Schematic](./watch.svg)
+
+### Inspiration
+https://github.com/ingepnet/breadboardwatch
