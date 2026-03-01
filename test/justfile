@@ -7,7 +7,10 @@ main:
   gcc {{TCFLAGS}} ../src/main.c -o {{OUTDIR}}/test_main
   {{OUTDIR}}/test_main
 
-button:
-  gcc {{TCFLAGS}} ./button_test.c -o {{OUTDIR}}/test_button
-  {{OUTDIR}}/test_button
+button: (test "button")
 
+mode: (test "mode")
+
+test source:
+  gcc {{TCFLAGS}} ./{{source}}_test.c -o {{OUTDIR}}/test_{{source}}
+  {{OUTDIR}}/test_{{source}}

@@ -1,7 +1,16 @@
 #include "button.h"
 #include "mode.h"
+#include "stubbed/testutils.h"
 #include <assert.h>
 #include <avr/io.h>
+
+void before_each() {
+  PINA = (1 << PA0); // Active on low
+  button_tick_count = 0;
+  button_inactive_for_ticks = 0;
+}
+
+void after_each() {}
 
 void test_button_press() {
   assert(check_button_state() == ButtonIdle);
@@ -50,13 +59,6 @@ void test_button_inactive_after_press() {
   // Button becomes active again after delay
   assert(check_button_state() == ButtonActive);
 }
-
-void before_each() {
-  PINA = (1 << PA0); // Active on low
-  button_tick_count = 0;
-  button_inactive_for_ticks = 0;
-}
-#define TEST before_each();
 
 int main() {
   TEST test_button_press();

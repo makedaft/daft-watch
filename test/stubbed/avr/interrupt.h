@@ -1,7 +1,7 @@
 #define ISR(INTER, ...) void generated_interrupt_##INTER()
 
-static void cli() {}
-static void sei() {}
+inline void cli() {}
+inline void sei() {}
 
 #define stub_run_timers()                                                      \
   {                                                                            \

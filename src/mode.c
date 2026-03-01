@@ -34,6 +34,7 @@ void apply_button_state(enum ButtonState button_state) {
       new_minutes = minutes;
       new_hours = hours;
       current_digit_index = 0;
+      time_set_timeout_ticks = SET_MODE_TIMEOUT;
       current_mode = ModeSetTime;
       break;
     default:
@@ -49,7 +50,7 @@ void apply_button_state(enum ButtonState button_state) {
         return;
       }
     } else {
-      time_set_timeout_ticks = 10 * 1024;
+      time_set_timeout_ticks = SET_MODE_TIMEOUT;
     }
 
     switch (button_state) {

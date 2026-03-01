@@ -3,5 +3,5 @@
 
 #include <unistd.h>
 
-static void _delay_ms(int ms) { usleep(ms * 1000); }
+inline void _delay_ms(int ms) { usleep(ms * 1000); }
 #endif
